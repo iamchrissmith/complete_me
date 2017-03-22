@@ -2,12 +2,13 @@ require 'pry'
 
 class Node
   attr_reader :letter, :children
-  attr_accessor :word_end
+  attr_accessor :word_end, :weight
 
   def initialize(letter)
     @letter = letter
     @children = {}
     @word_end = 0
+    @weight = nil
   end
 
   def find_node(letter)
