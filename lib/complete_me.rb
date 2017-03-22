@@ -18,7 +18,7 @@ class CompleteMe
     end
     until stack.empty?
       node = stack.pop
-      count_of_each << node.
+      count_of_each << node.word_end
       node.children.each_key do |key|
         stack.push(node.children[key])
       end
@@ -43,18 +43,7 @@ class CompleteMe
 
   def suggest(partial)
     letters = partial.split('')
-    traverse(letters, node = @head)
-  end
-
-  def traverse (prefix, node = @head)
-    if node.word_end
-      return puts(prefix)
-    end
-
-    node.children.each do |child
-
-    end
-
+    find_suggestion_start(letters, node = @head)
   end
 
   def find_suggestion_start(letters, node = @head, suggestion = '')
