@@ -71,11 +71,15 @@ class CompleteMeTest < MiniTest::Test
   end
 
   def test_populate_adds_whole_dictionary
-    skip
+    # skip
     completion = CompleteMe.new
     dictionary = File.read("/usr/share/dict/words")
+
     completion.populate(dictionary)
     assert_equal 235886, completion.count
+
+    result = completion.suggest("piz")
+    assert_equal ["pize", "pizza", "pizzeria", "pizzicato", "pizzle"], result
   end
 
 end
