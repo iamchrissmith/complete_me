@@ -1,43 +1,44 @@
+require 'pry'
+
 class Node
   attr_reader :letter, :children
+  attr_accessor :end_of_word
+
   def initialize(letter)
     @letter = letter
-    @children = []
+    @children = {}
+    @end_of_word = 0
   end
 
   def find_node(letter)
-    children.each.with_index do |child,idx|
-      if child.letter == letter
-        return idx
-      end
-    end
-    false
+    children[letter.to_sym]
   end
 
-  def add_node(letter)
+  def add_node(letter, is_new=0)
     new_node = Node.new(letter)
-    children.push(new_node).index(new_node)
+    new_node.end_of_word = is_new
+    children[letter.to_sym] = new_node
   end
 
-  def add_letters(letters)
-    index = add_node(letters[0])
-    pass_letters(letters, index)
+  def add_letters(this_letter, letters)
+    last = letters.empty? ? 1 : 0
+    new_node = add_node(this_letter,last)
+    pass_letters(this_letter, letters)
   end
 
-  def pass_letters(letters, index)
-    letters.shift
+  def pass_letters(this_letter, letters)
     unless letters.empty?
-      children[index].place_letters(letters)
+      children[this_letter.to_sym].place_letters(letters)
     end
   end
 
   def place_letters(letters)
-    this_letter = letters[0]
+    this_letter = letters.shift
     if find_node(this_letter)
-      index = find_node(this_letter)
-      pass_letters(letters, index)
+      pass_letters(this_letter, letters)
     else
-      add_letters(letters)
+      add_letters(this_letter, letters)
     end
   end
+
 end
