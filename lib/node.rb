@@ -2,7 +2,7 @@ require 'pry'
 
 class Node
   attr_reader :letter, :children
-  attr_accessor :word_end, :weight
+  attr_accessor :weight, :word_end
 
   def initialize(letter)
     @letter = letter
@@ -35,8 +35,11 @@ class Node
 
   def place_letters(letters)
     this_letter = letters.shift
-    if find_node(this_letter)
+    if find_node(this_letter) && !letters.empty?
       pass_letters(this_letter, letters)
+    elsif find_node(this_letter)
+      this_node = find_node(this_letter)
+      this_node.word_end = 1
     else
       add_letters(this_letter, letters)
     end

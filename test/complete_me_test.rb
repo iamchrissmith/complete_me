@@ -1,6 +1,7 @@
 require 'minitest'
 require 'minitest/autorun'
-require 'minitest/pride'
+# require 'minitest/pride'
+require 'minitest/emoji'
 
 require './lib/complete_me.rb'
 
@@ -33,6 +34,8 @@ class CompleteMeTest < MiniTest::Test
     assert_equal 1, completion.count
     completion.insert("pizzeria")
     assert_equal 2, completion.count
+    completion.insert("pi")
+    assert_equal 3, completion.count
   end
 
   def test_completeme_word_insert_adds_nodes
