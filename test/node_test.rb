@@ -39,22 +39,22 @@ class NodeTest < MiniTest::Test
     assert_equal "a", node.children[:a].letter
   end
 
-  def test_if_letter_is_last_assigns_1_to_end_of_word
+  def test_if_letter_is_last_assigns_1_to_word_end
     node = Node.new('')
     result = node.add_node('a',1)
     assert_equal "a", node.children[:a].letter
-    assert_equal 1, node.children[:a].end_of_word
+    assert_equal 1, node.children[:a].word_end
   end
 
-  def test_if_letter_is_not_last_assigns_0_to_end_of_word
+  def test_if_letter_is_not_last_assigns_0_to_word_end
     node = Node.new('')
 
     result = node.add_node('a',0)
     assert_equal "a", node.children[:a].letter
-    assert_equal 0, node.children[:a].end_of_word
+    assert_equal 0, node.children[:a].word_end
 
     result1 = node.add_node('b')
     assert_equal "b", node.children[:b].letter
-    assert_equal 0, node.children[:b].end_of_word
+    assert_equal 0, node.children[:b].word_end
   end
 end

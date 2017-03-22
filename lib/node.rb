@@ -2,12 +2,12 @@ require 'pry'
 
 class Node
   attr_reader :letter, :children
-  attr_accessor :end_of_word
+  attr_accessor :word_end
 
   def initialize(letter)
     @letter = letter
     @children = {}
-    @end_of_word = 0
+    @word_end = 0
   end
 
   def find_node(letter)
@@ -16,7 +16,7 @@ class Node
 
   def add_node(letter, is_new=0)
     new_node = Node.new(letter)
-    new_node.end_of_word = is_new
+    new_node.word_end = is_new
     children[letter.to_sym] = new_node
   end
 
