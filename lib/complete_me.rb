@@ -42,9 +42,11 @@ class CompleteMe
   def suggest(partial)
     letters = partial.split('')
     start_node = find_suggestion_start(letters)
+
     return "No Suggestions" unless start_node
+
     original = partial
-    final = traverse_suggestions(partial, start_node, original, {})
+    final = traverse(partial, start_node, original, {})
     sort_suggestions(final)
   end
 
@@ -54,7 +56,7 @@ class CompleteMe
     final.flatten.reject { |v| !v.is_a? String}
   end
 
-  def traverse_suggestions (prefix, node = @head, orig_prefix, suggestions)
+  def traverse (prefix, node = @head, orig_prefix, suggestions)
     if node.word_end != 0 && node.children.empty?
       if !node.weight.nil? && node.weight.key?(orig_prefix)
         return {prefix => node.weight[orig_prefix]}
@@ -71,15 +73,18 @@ class CompleteMe
 
     node.children.each do |key, child|
       new_prefix = prefix + child.letter
-      suggestions = suggestions.merge(traverse_suggestions(new_prefix, child, orig_prefix, {}))
+      suggestions = suggestions.merge(traverse(new_prefix, child, orig_prefix, {}))
     end
     suggestions
   end
 
   def find_suggestion_start(letters, node = @head, suggestion = '')
     letter = letters[0]
+
     return false if !node.find_node(letter)
+
     suggestion += letters.shift
+
     if letters.length > 0
       find_suggestion_start(letters, node.children[letter.to_sym],suggestion)
     else
@@ -89,7 +94,9 @@ class CompleteMe
 
   def select(partial, word)
     letters = word.split('')
+
     last_node = find_suggestion_start(letters)
+
     if last_node.weight.nil?
       last_node.weight = {partial => 1}
     elsif last_node.weight.key?(partial)

@@ -3,7 +3,7 @@ SimpleCov.start
 
 require 'minitest'
 require 'minitest/autorun'
-require 'minitest/pride'
+require 'minitest/emoji'
 
 require './lib/node.rb'
 
