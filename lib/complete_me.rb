@@ -1,4 +1,4 @@
-require 'pry'
+# require 'pry'
 require './lib/node'
 
 class CompleteMe
@@ -51,7 +51,6 @@ class CompleteMe
   end
 
   def sort_suggestions(final)
-    # binding.pry
     final = final.sort { |(k1, v1), (k2, v2)| [v2, k1] <=> [v1, k2] }
     final.flatten.reject { |v| !v.is_a? String}
   end
@@ -104,5 +103,68 @@ class CompleteMe
     else
       last_node.weight[partial] = 1
     end
+  end
+
+  def move_down_branch(letters, node = @head, count = 0)
+    # binding.pry
+    letter = letters[count]
+
+    return false if !node.find_node(letter)
+
+    if letter != letters.last
+      count += 1
+      move_down_branch(letters, node.children[letter.to_sym], count)
+    else
+      [node, node.children[letter.to_sym]]
+      # node
+    end
+  end
+
+  def prune_tree(next_to_last, end_node, letters, last_letter='')
+    # binding.pry
+    next_to_last.children.delete(last_letter.to_sym)
+
+    if !letters.empty? && next_to_last.children.empty? && next_to_last.word_end != 1
+      last_letter = letters.pop
+      next_to_last, new_node = move_down_branch(letters)
+      prune_tree(next_to_last, new_node, letters, last_letter)
+    end
+  end
+
+  def delete(word, last_letter = '', first_delete = true)
+    letters = word.split('')
+    # binding.pry
+    last_node = move_down_branch(letters)
+    last_node.word_end = 0
+    if last_node.children.empty?
+      last_letter = letters.pop
+      # new_node = move_down_branch(letters)
+      prune_tree(last_node, letters, last_letter)
+    end
+    # binding.pry
+    # if first_delete && last_node.has_child?(last_letter)
+    #   last_node.children.delete(last_letter.to_sym)
+    #   last_node.word_end = 0
+    # elsif last_node.word_end? && last_node.has_child?(last_letter)
+    #   last_node.children.delete(last_letter.to_sym)
+    # end
+    # if last_node.children.empty?
+    #   letters = word.split('')
+    #   last_letter = letters.pop
+    #   delete(letters,last_letter)
+    # end
+
+    # traverse tree remove word_end from last node
+    # if that node has no children
+    # - navigate back to node above and delete child
+    # - continue until
+    # - - we hit another word_end
+    # - - or a node with children
+  end
+
+  def addresses
+    # parse csv and grab last column
+    # insert address (strip spaces and punctuation)
+    #
   end
 end
