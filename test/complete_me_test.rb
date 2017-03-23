@@ -1,3 +1,6 @@
+require 'simplecov'
+SimpleCov.start
+
 require 'minitest'
 require 'minitest/autorun'
 # require 'minitest/pride'
@@ -14,18 +17,6 @@ class CompleteMeTest < MiniTest::Test
   def test_completeme_starts_without_word_count
     completion = CompleteMe.new
     assert_equal 0, completion.count
-  end
-
-  def test_find_node_returns_true_when_found
-    completion = CompleteMe.new
-    refute completion.find_node('a')
-    completion.insert('a')
-    assert completion.find_node('a')
-  end
-
-  def test_find_node_returns_false_if_not_found
-    completion = Node.new('')
-    assert_nil completion.find_node("p")
   end
 
   def test_completeme_word_count_increments_with_insert
@@ -71,6 +62,13 @@ class CompleteMeTest < MiniTest::Test
     completion.insert("pizzeria")
     result = completion.suggest("piz")
     assert_equal ["pizza", "pizzeria"], result
+  end
+
+  def test_populate_returns_words_added
+    completion = CompleteMe.new
+    small_dictionary = "pizza\ndog\ncat"
+    expected = ["pizza", "dog", "cat"]
+    assert_equal expected, completion.populate(small_dictionary)
   end
 
   def test_populate_adds_whole_dictionary

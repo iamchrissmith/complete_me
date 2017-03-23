@@ -21,8 +21,16 @@ class Node
     children[letter.to_sym] = new_node
   end
 
+  def assign_word_end(empty)
+    if empty
+      1
+    else
+      0
+    end
+  end
+
   def add_letters(this_letter, letters)
-    last = letters.empty? ? 1 : 0
+    last = assign_word_end( letters.empty? )
     new_node = add_node(this_letter,last)
     pass_letters(this_letter, letters)
   end
@@ -35,9 +43,10 @@ class Node
 
   def place_letters(letters)
     this_letter = letters.shift
-    if find_node(this_letter) && !letters.empty?
+    is_placed = find_node(this_letter)
+    if is_placed && !letters.empty?
       pass_letters(this_letter, letters)
-    elsif find_node(this_letter)
+    elsif is_placed
       this_node = find_node(this_letter)
       this_node.word_end = 1
     else
