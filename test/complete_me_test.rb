@@ -223,14 +223,18 @@ class CompleteMeTest < MiniTest::Test
   end
 
   def test_delete_removes_word
+    # skip
     completion = CompleteMe.new
-    completion.insert("piza")
+    completion.insert("pizza")
     assert_equal 1, completion.count
-    assert_equal ["piza"], completion.suggest("piz")
+    completion.insert("pize")
+    assert_equal 2, completion.count
 
-    completion.delete("piza")
-    assert_equal 0, completion.count
-    assert_equal "No Suggestions", completion.suggest("piz")
+    assert_equal ["pize", "pizza"], completion.suggest("piz")
+
+    completion.delete("pizza")
+    assert_equal 1, completion.count
+    assert_equal ["pize"], completion.suggest("piz")
 
   end
 

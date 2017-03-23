@@ -8,19 +8,26 @@ class CompleteMe
     @head = Node.new("")
   end
 
-  def count
-    count_of_each = []
-    current = @head
-    stack = current.children.map do |key, value|
-      value
-    end
+  def cycle_stack(stack, count)
     until stack.empty?
       node = stack.pop
-      count_of_each << node.word_end
+      count << node.word_end
       node.children.each_key do |key|
         stack.push(node.children[key])
       end
     end
+  end
+
+  def seed_stack(current)
+    current.children.map do |key, value|
+      value
+    end
+  end
+
+  def count
+    count_of_each = []
+    stack = seed_stack(@head)
+    cycle_stack(stack, count_of_each)
     count_of_each.reduce(0, :+)
   end
 
@@ -106,7 +113,6 @@ class CompleteMe
   end
 
   def move_down_branch(letters, node = @head, count = 0)
-    # binding.pry
     letter = letters[count]
 
     return false if !node.find_node(letter)
@@ -115,56 +121,28 @@ class CompleteMe
       count += 1
       move_down_branch(letters, node.children[letter.to_sym], count)
     else
-      [node, node.children[letter.to_sym]]
-      # node
+      node.children[letter.to_sym]
     end
   end
 
-  def prune_tree(next_to_last, end_node, letters, last_letter='')
-    # binding.pry
-    next_to_last.children.delete(last_letter.to_sym)
-
-    if !letters.empty? && next_to_last.children.empty? && next_to_last.word_end != 1
-      last_letter = letters.pop
-      next_to_last, new_node = move_down_branch(letters)
-      prune_tree(next_to_last, new_node, letters, last_letter)
+  def prune_tree(letters, begin_delete = @head, current = @head, delete = letters[0])
+    return [begin_delete, delete] if current.children.length == 0
+    if current.word_end == 1 || current.children.length > 1
+      begin_delete = current
+      delete = letters[0]
     end
+    letter = letters.shift
+    current = current.find_node(letter)
+    prune_tree(letters, begin_delete, current, delete)
   end
 
   def delete(word, last_letter = '', first_delete = true)
     letters = word.split('')
-    # binding.pry
     last_node = move_down_branch(letters)
     last_node.word_end = 0
     if last_node.children.empty?
-      last_letter = letters.pop
-      # new_node = move_down_branch(letters)
-      prune_tree(last_node, letters, last_letter)
+      parent, delete = prune_tree(letters)
+      parent.children.delete(delete.to_sym)
     end
-    # binding.pry
-    # if first_delete && last_node.has_child?(last_letter)
-    #   last_node.children.delete(last_letter.to_sym)
-    #   last_node.word_end = 0
-    # elsif last_node.word_end? && last_node.has_child?(last_letter)
-    #   last_node.children.delete(last_letter.to_sym)
-    # end
-    # if last_node.children.empty?
-    #   letters = word.split('')
-    #   last_letter = letters.pop
-    #   delete(letters,last_letter)
-    # end
-
-    # traverse tree remove word_end from last node
-    # if that node has no children
-    # - navigate back to node above and delete child
-    # - continue until
-    # - - we hit another word_end
-    # - - or a node with children
-  end
-
-  def addresses
-    # parse csv and grab last column
-    # insert address (strip spaces and punctuation)
-    #
   end
 end
